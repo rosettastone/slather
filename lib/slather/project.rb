@@ -450,7 +450,12 @@ module Slather
     def find_binary_file_in_bundle(bundle_file)
       if File.directory? bundle_file
         bundle_file_noext = File.basename(bundle_file, File.extname(bundle_file))
-        Dir["#{bundle_file}/**/#{bundle_file_noext}"].first
+        found_binary_file = Dir["#{bundle_file}/**/#{bundle_file_noext}"].first
+        unless found_binary_file
+          bundle_file_noext_noplat = bundle_file_noext.gsub(/-(ios|osx|macos|tvos|watchos)$/i, '')
+          found_binary_file = Dir["#{bundle_file}/**/#{bundle_file_noext_noplat}"].first
+        end
+        found_binary_file
       else
         bundle_file
       end
